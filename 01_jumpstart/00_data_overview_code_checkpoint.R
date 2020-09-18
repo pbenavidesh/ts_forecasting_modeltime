@@ -16,7 +16,7 @@ library(tidyverse)
 # Google Analytics - Summary Hourly
 read_rds("00_data/google_analytics_summary_hourly.rds")
 
-# Google Analytics - Top 20 pages, Daily
+# Google Analytics - Top 20 Pages, Daily
 read_rds("00_data/google_analytics_by_page_daily.rds")
 
 
@@ -27,7 +27,6 @@ read_rds("00_data/google_analytics_by_page_daily.rds")
 # Mailchimp Data
 read_rds("00_data/mailchimp_users.rds")
 
-
 # Learning Labs
 read_rds("00_data/learning_labs.rds")
 
@@ -35,9 +34,8 @@ read_rds("00_data/learning_labs.rds")
 #   - Revenue data (aggregated at weekly interval)
 #   - Product Events
 
-# Transactions weekly
+# Transactions Weekly
 read_rds("00_data/transactions_weekly.rds")
 
 # Product Events
 read_rds("00_data/product_events.rds")
-
