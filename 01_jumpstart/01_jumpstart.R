@@ -145,7 +145,13 @@ calibration_tbl %>%
 
 # 4.0 FORECASTING WITH FEATURE ENGINEERING ----
 
+# * Identifying possible features ----
 
+evaluation_tbl %>% 
+  plot_seasonal_diagnostics(
+    .date_var = optin_time, 
+    .value    = log(optins)
+  )
 
 
 
