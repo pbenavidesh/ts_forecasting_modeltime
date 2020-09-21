@@ -49,7 +49,8 @@ optins_day_tbl
 
 # * Summary Diagnostics ----
 
-optins_day_tbl %>% tk_summary_diagnostics(.date_var = optin_time)
+optins_day_tbl %>% 
+  tk_summary_diagnostics(.date_var = optin_time)
 
 # * Pad the Time Series ----
 
@@ -153,6 +154,68 @@ evaluation_tbl %>%
     .value    = log(optins)
   )
 
+# * Recipe spec ----
+
+recipe_spec <- training(splits) %>% 
+  recipe(optins ~ .) %>% 
+  
+  # Time Series Signature
+  # adds a number of calendar features
+  step_timeseries_signature(optin_time) %>% 
+  
+  # remove unnecesary features
+  step_rm(ends_with(".iso"), ends_with(".xts"),
+          contains("hour"), contains("minute"),
+          contains("second"), contains("am.pm")) %>% 
+  
+  # normalize (subtract mean and scales to standard
+  # deviation of 1)
+  step_normalize(ends_with("index.num"), 
+                 ends_with("_year")) %>% 
+  step_dummy(all_nominal())
+
+# prep() performs pre-calculations and preprocessing
+# training steps
+# juice() returns the training data 
+# post-transformation so we can see the 
+# transformations that were applied
+recipe_spec %>% prep() %>% juice() %>% glimpse()
+
+# * Machine Learning Specs ----
+
+model_spec <- linear_reg() %>% 
+  set_engine("lm")
+
+# workflow() initializes a workflow that combines
+# both a model and a preprocessing recipe
+
+workflow_fit_lm <- workflow() %>% 
+  add_model(model_spec) %>% 
+  add_recipe(recipe_spec) %>% 
+  fit(training(splits))
+
+workflow_fit_lm
+
+
+# * Modeltimme Process ----
+
+calibration_tbl <-  modeltime_table(
+  model_prophet_fit,
+  workflow_fit_lm
+) %>% 
+  modeltime_calibrate(testing(splits))
+
+calibration_tbl
+
+calibration_tbl %>% modeltime_accuracy()
+
+
+calibration_tbl %>% 
+  modeltime_forecast(
+    new_data    = testing(splits),
+    actual_data = evaluation_tbl
+  ) %>% 
+  plot_modeltime_forecast()
 
 
 # 5.0 SUMMARY & NEXT STEPS ----
