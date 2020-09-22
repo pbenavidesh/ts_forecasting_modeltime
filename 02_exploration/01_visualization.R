@@ -91,15 +91,72 @@ google_analytics_long_hour_tbl %>%
 
 # * Mutations/Transformations ----
 
+subscribers_day_tbl %>% 
+  plot_time_series(optin_time, log(optins + 1))
+
+google_analytics_long_hour_tbl %>% 
+  group_by(name) %>% 
+  plot_time_series(
+    .date_var = date,
+    .value    = log(value + 1)
+  )
 
 # * Smoother Adjustment
+
+subscribers_day_tbl %>% 
+  plot_time_series(
+    .date_var = optin_time,
+    .value    = log(optins + 1),
+    .smooth   = FALSE
+  )
+
+subscribers_day_tbl %>% 
+  plot_time_series(
+    .date_var      = optin_time,
+    .value         = log(optins + 1),
+    .smooth_period = "30 days"
+  ) # is very variable
+
+subscribers_day_tbl %>% 
+  plot_time_series(
+    .date_var       = optin_time,
+    .value          = log(optins + 1),
+    .smooth_period  = "90 days",
+    .smooth_message = TRUE
+  ) # looks more like a moving average
+
+# Setting the degree of the polynomial to fit:
+
+subscribers_day_tbl %>% 
+  plot_time_series(
+    .date_var       = optin_time,
+    .value          = log(optins + 1),
+    .smooth_period  = "90 days",
+    .smooth_message = TRUE,
+    .smooth_degree  = 1
+  ) # looks more like a moving average
+
+# .smooth_span takes a % of the data to smooth it
+# (greater values yield smoother lines)
+
+google_analytics_long_hour_tbl %>% 
+  group_by(name) %>% 
+  plot_time_series(
+    date, 
+    log(value + 1),
+    .smooth_period = "7 days"
+  )
 
 
 # * Static ggplot ----
 
+subscribers_day_tbl %>% 
+  plot_time_series(optin_time, optins, 
+                   .plotly_slider = TRUE)
 
-
-
+subscribers_day_tbl %>% 
+  plot_time_series(optin_time, optins, 
+                   .interactive = FALSE)
 
 # 2.0 ACF Diagnostics ----
 # - Detecting Lagged Features
