@@ -253,18 +253,98 @@ google_analytics_long_hour_tbl %>%
 
 ?plot_anomaly_diagnostics
 
+subscribers_day_tbl %>% 
+  plot_anomaly_diagnostics(
+    .date_var = optin_time,
+    .value    = optins
+  )
 
+# adjusting the plot
+# .alpha controls the bands defining the "normal"
+# data. Lower values increase the width.
+subscribers_day_tbl %>% 
+  plot_anomaly_diagnostics(
+    .date_var = optin_time,
+    .value    = optins,
+    .alpha    = 0.01
+  )
 
+# .max_anomalies controls the maximum percentage 
+# of data allowed to be anomalous
 
+subscribers_day_tbl %>% 
+  plot_anomaly_diagnostics(
+    .date_var      = optin_time,
+    .value         = optins,
+    .alpha         = 0.01,
+    .max_anomalies = 0.01
+  )
+
+subscribers_day_tbl %>% 
+  tk_anomaly_diagnostics(
+    .date_var      = optin_time,
+    .value         = optins,
+    .alpha         = 0.01,
+    .max_anomalies = 0.01
+  )
+
+# Grouped Anomalies
+
+google_analytics_long_hour_tbl %>% 
+  group_by(name) %>% 
+  plot_anomaly_diagnostics(date, value)
+
+google_analytics_long_hour_tbl %>% 
+  group_by(name) %>% 
+  tk_anomaly_diagnostics(date, value)
 
 # 5.0 SEASONAL DECOMPOSITION ----
 # - Detecting Trend and Seasonal Cycles
 
 ?plot_stl_diagnostics
 
+subscribers_day_tbl %>% 
+  plot_stl_diagnostics(optin_time, optins)
 
+# modifying the trend and seasonality
+subscribers_day_tbl %>% 
+  plot_stl_diagnostics(
+    .date_var  = optin_time, 
+    .value     = optins,
+    .frequency = "1 month",
+    .trend     = "1 year"
+  )
 
+# we can see more clearly using logs
 
+subscribers_day_tbl %>% 
+  plot_stl_diagnostics(
+    .date_var  = optin_time, 
+    .value     = log(optins + 1),
+    .frequency = "1 month",
+    .trend     = "1 year"
+  )
+
+# Grouped TS
+
+google_analytics_long_hour_tbl %>% 
+  group_by(name) %>% 
+  plot_stl_diagnostics(
+    .date_var  = date, 
+    .value     = log(value + 1),
+    .frequency = "1 month",
+    .trend     = "1 year"
+  )
+
+# retrieving the data
+google_analytics_long_hour_tbl %>% 
+  group_by(name) %>% 
+  tk_stl_diagnostics(
+    .date_var  = date, 
+    .value     = log(value + 1),
+    .frequency = "1 month",
+    .trend     = "1 year"
+  )
 
 # 6.0 TIME SERIES REGRESSION PLOT ----
 # - Finding features
