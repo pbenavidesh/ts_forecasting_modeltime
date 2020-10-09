@@ -197,7 +197,7 @@ workflow_fit_lm <- workflow() %>%
 workflow_fit_lm
 
 
-# * Modeltimme Process ----
+# * Modeltime Process ----
 
 calibration_tbl <-  modeltime_table(
   model_prophet_fit,
