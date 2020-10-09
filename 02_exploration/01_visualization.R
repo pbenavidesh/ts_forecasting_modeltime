@@ -351,6 +351,55 @@ google_analytics_long_hour_tbl %>%
 
 ?plot_time_series_regression
 
+# A basic linear regression that just captures the 
+# trend
+subscribers_day_tbl %>% 
+  plot_time_series_regression(
+    .date_var = optin_time,
+    .formula  = optins ~ as.numeric(optin_time)
+  )
+
+# Adding weekday features
+subscribers_day_tbl %>% 
+  plot_time_series_regression(
+    .date_var = optin_time,
+    .formula  = optins ~ as.numeric(optin_time) + 
+      wday(optin_time, label = TRUE)
+  )
+
+# Adding month features too
+
+subscribers_day_tbl %>% 
+  plot_time_series_regression(
+    .date_var = optin_time,
+    .formula  = optins ~ as.numeric(optin_time) + 
+      wday(optin_time, label = TRUE) +
+      month(optin_time, label = TRUE),
+    .show_summary = TRUE
+  )
 
 
+# This last model's R2 is very low, mainly because of 
+# the high outliers. We will try taking the log(+ 1)
+# transformation
 
+subscribers_day_tbl %>% 
+  plot_time_series_regression(
+    .date_var = optin_time,
+    .formula  = log(optins + 1) ~ as.numeric(optin_time) + 
+      wday(optin_time, label = TRUE) +
+      month(optin_time, label = TRUE),
+    .show_summary = TRUE
+  )
+
+# With grouped data
+
+google_analytics_long_hour_tbl %>% 
+  group_by(name) %>% 
+  plot_time_series_regression(
+    .date_var = date, 
+    .formula  = log(value + 1) ~ as.numeric(date) + 
+      as_factor(hour(date)) +
+      wday(date, label = TRUE) +
+      month(date, label = TRUE)
+  )
