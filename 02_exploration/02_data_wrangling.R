@@ -292,18 +292,49 @@ log_standardized_subscribers_joined_tbl %>%
 # 6.0 WORKING WITH THE INDEX ----
 # - Index Manipulations
 
+subscribers_daily_tbl %>% tk_index() %>% class()
+subscribers_daily_tbl %>% tk_index() %>% str()
+
 # * Making an index ----
 
+values <- 1:100
+
+tk_make_timeseries("2011",by = "month", length_out = 100)
+
+tibble(
+  date = tk_make_timeseries("2011",by = "month", length_out = 100),
+  values
+) %>% 
+  plot_time_series(date, values, .smooth = FALSE)
 
 # * Holiday Sequence ----
 
+tk_make_holiday_sequence("2011", "2021", calendar = "NYSE") %>% 
+  tk_get_holiday_signature() %>% 
+  glimpse()
+
+tk_make_timeseries("2011") %>% 
+  tk_get_holiday_signature()
 
 # * Offsetting time ----
 
+"2011-01-01" %+time% "1 day"
+
+"2011-01-01" %-time% "1 day"
+
+"2011-01-01" %+time% "1 month"
+
+"2011-01-01" %+time% "1 year"
+
+tk_make_timeseries("2011") %+time% "1 year" 
 
 # * Extending an index ----
 
+tk_make_timeseries("2011-01") %>% 
+  tk_make_future_timeseries(length_out = "1 month")
 
+tk_make_timeseries("2011", by = "quarter") %>% 
+  tk_make_future_timeseries(length_out = "1 year")
 
 
 # 7.0 FUTURE FRAME ----
