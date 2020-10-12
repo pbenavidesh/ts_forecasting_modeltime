@@ -145,12 +145,35 @@ transactions_tbl %>%
 
 # * Fill Daily Gaps ----
 
+subscribers_daily_tbl %>% 
+  pad_by_time(
+    .date_var   = optin_time,
+    .by         = "day",
+    .pad_value  = 0,
+    .start_date = "2018-06-01"
+  )
 
+# You can filter data too by specifying a posterior start date
 
+subscribers_daily_tbl %>% 
+  pad_by_time(
+    .date_var   = optin_time,
+    .by         = "day",
+    .pad_value  = 0,
+    .start_date = "2018-07-01"
+  )
 
 # * Weekly to Daily ----
 
-
+transactions_tbl %>% 
+  pad_by_time(
+    .date_var   = purchased_at,
+    .by         = "day",
+    .start_date = "2018-06"
+  ) %>% 
+  mutate_by_time(
+    .by            = "week", 
+    revenue_spread = sum(revenue, na.rm = TRUE) / 7)
 
 
 
