@@ -223,8 +223,19 @@ subscribers_daily_tbl %>%
 
 # * First, Last, Mean, Median by Period ----
 
+transactions_tbl %>% 
+  plot_time_series(purchased_at, revenue)
 
-
+transactions_tbl %>% 
+  mutate_by_time(
+    .by = "month",
+    revenue_mean   = mean(revenue),
+    revenue_median = median(revenue),
+    revenue_max    = max(revenue),
+    revenue_min    = min(revenue)
+  ) %>% 
+  pivot_longer(contains("revenue")) %>% 
+  plot_time_series(purchased_at, value, name, .smooth = FALSE)
 
 
 # 5.0 JOINING BY TIME ----
