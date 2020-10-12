@@ -244,14 +244,50 @@ transactions_tbl %>%
 
 # * Subscribers + GA Summary Web Traffic ----
 
+subscribers_daily_padded_tbl <- subscribers_daily_tbl %>% 
+  pad_by_time(.pad_value = 0, .start_date = "2018-06")
+
+subscribers_google_joined_tbl <- subscribers_daily_padded_tbl %>% 
+  left_join(google_analytics_summary_daily_tbl, 
+            by = c("optin_time" = "dateHour"))
+
 
 # * Inspect Join -----
+
+subscribers_google_joined_tbl %>% 
+  plot_missing()
+
+# 53% of the data from google is missing.
+
+google_analytics_summary_daily_tbl %>%  tk_summary_diagnostics()
+# google starts at 2019-05-08 -> 300 obs
+
+subscribers_google_joined_tbl %>% tk_summary_diagnostics()
+# starts in 2018-06 -> 641 obs
+
+subscribers_google_joined_tbl %>% 
+  pivot_longer(-optin_time) %>% 
+  plot_time_series(optin_time, value, .color_var = name)
 
 
 # * Visualization Techniques (Relationships) ----
 
+log_standardized_subscribers_joined_tbl <- subscribers_google_joined_tbl %>% 
+  drop_na() %>% 
+  mutate(across(optins:sessions, .fns = log1p),
+         across(optins:sessions, .fns = standardize_vec))
 
+log_standardized_subscribers_joined_tbl %>% 
+  pivot_longer(optins:sessions) %>% 
+  plot_time_series(optin_time, value, name, .smooth = FALSE)
 
+log_standardized_subscribers_joined_tbl %>% 
+  plot_acf_diagnostics(
+    .date_var           = optin_time, 
+    .value              = optins, 
+    .ccf_vars           = pageViews:sessions,
+    .show_ccf_vars_only = TRUE
+  )
 
 # 6.0 WORKING WITH THE INDEX ----
 # - Index Manipulations
