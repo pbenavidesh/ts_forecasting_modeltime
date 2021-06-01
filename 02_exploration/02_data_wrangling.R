@@ -48,6 +48,7 @@ subscribers_daily_tbl <- mailchimp_users_tbl %>%
     .by       = "day",
     optins    = n()
   )
+subscribers_daily_tbl
 
 # Grouped
 
@@ -91,7 +92,7 @@ subscribers_weekly_tbl <- mailchimp_users_tbl %>%
     .by = "1 week",
     optins = n()
   )
-
+subscribers_weekly_tbl
 
 # * To Monthly - Transactions ----
 

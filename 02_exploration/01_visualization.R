@@ -54,8 +54,9 @@ subscribers_day_tbl
 
 subscribers_day_tbl %>% 
   plot_time_series(
-    .date_var = optin_time,
-    .value    = optins
+    .date_var      = optin_time,
+    .value         = optins,
+    .plotly_slider = TRUE
   )
 
 google_analytics_long_hour_tbl %>% 
